@@ -62,7 +62,7 @@ def getCountryComparisonPlot(country_list,indicator_list,enableLegend):
 
 local_css("style.css")
 
-data = pd.read_csv("../Downloads/WDI_csv/WDIData.csv")
+data = pd.read_csv("WDIData.csv")
 
 st.sidebar.title("Navigation")
 pages = ["About the Dataset","Interactive Plots","Interesting Insights"]
