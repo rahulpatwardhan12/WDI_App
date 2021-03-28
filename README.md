@@ -9,6 +9,7 @@ To run this web app on your local system:
 
 * Download the github repo
 * Open Terminal/Command Line
+* Go to directory where you stored the downloaded repo
 * Type `pip install streamlit` (feel free to skip this step if you have already downloaded it)
 * Type `streamlit run WDIapp.py`
 
