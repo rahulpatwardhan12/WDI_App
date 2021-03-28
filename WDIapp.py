@@ -172,6 +172,13 @@ if page=='About the Dataset':
         The primary World Bank collection of development indicators, compiled from officially-recognized international sources. 
         It presents the most current and accurate global development data available, and includes national, regional and global estimates.
         
+        Topics: Agriculture and Food Security, Climate Change, Economic Growth, 
+        Education, Energy and Extractives, 
+        Environment and Natural Resources, Financial Sector Development, 
+        Gender, Health, Nutrition and Population, Macroeconomic Vulnerability and Debt, Poverty, 
+        Private Sector Development, Public Sector Management, 
+        Social Development, Social Protection and Labor, Trade, Urban Development
+        
         Type: Time Series
         
         Periodicity: Annual
