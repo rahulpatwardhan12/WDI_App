@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objs as go
+from csv import writer
 
 def local_css(file_name):
     with open(file_name) as f:
@@ -49,7 +50,7 @@ def getCountryComparisonPlot(country_list,indicator_list,enableLegend):
             fig2.add_scatter(x=ct2.index, y=ct2[col], name=col[0] + ", " + data.iloc[col[1]]["Indicator Name"], legendgroup=col[0])
     
         fig2.update_layout(
-            title="Indicator Comapison Plot",
+            #title="Indicator Comapison Plot",
             xaxis_title="Year",
             yaxis_title="Value",
             showlegend=enableLegend,
@@ -63,6 +64,7 @@ def getCountryComparisonPlot(country_list,indicator_list,enableLegend):
 local_css("style.css")
 
 data = pd.read_csv("WDIData.csv")
+insight_data = pd.read_pickle("insights.pkl")
 
 st.sidebar.title("Navigation")
 pages = ["About the Dataset","Interactive Plots","Interesting Insights"]
@@ -111,7 +113,8 @@ if page=='Interactive Plots':
         )
 
 
-    st.write("---")
+    st.write(" ")
+    st.write(" ")
 
     with st.beta_expander("Advanced Settings",False):
         adv1, adv2, adv3, adv4 = st.beta_columns([4,1,2,1])
@@ -130,7 +133,9 @@ if page=='Interactive Plots':
             st.write("")
             enableLegend = st.checkbox("Show Legend")
 
-    st.write("---")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
     
     country_list = st.multiselect(
         "Choose Countries/Categories", data["Country Name"].unique().tolist(), ["India", "United States"]
@@ -143,7 +148,9 @@ if page=='Interactive Plots':
     if indicator_list:
         st.plotly_chart(getCountryComparisonPlot(country_list,indicator_list,enableLegend))
 
-    st.write("---")
+    st.write(" ")
+    st.write(" ")
+    st.write(" ")
 
     with st.beta_expander("Submit an Insight"):
         st.text("Your current plot will be saved for reference")
@@ -152,6 +159,17 @@ if page=='Interactive Plots':
 
         if st.button("Submit"):
             if ta and name and indicator_list:
+                ii_ct = country_list
+                ii_il = indicator_list
+                
+                # with open('insights.csv','a') as fd:
+                #     writer_obj = writer(fd)
+                #     writer_obj.writerow([name,ta,[ii_ct,ii_il],"No"])
+                #     fd.close()
+
+                #insight_data = pd.DataFrame(columns=["Name","Insight","Plot","Approved"])
+                insight_data.loc[len(insight_data)]=[name,ta,[ii_ct,ii_il],"No"]
+                insight_data.to_pickle("insights.pkl")
                 st.success("Insight successfully submitted!")
             else:
                 st.error("Please fill all fields!")
@@ -172,13 +190,6 @@ if page=='About the Dataset':
         The primary World Bank collection of development indicators, compiled from officially-recognized international sources. 
         It presents the most current and accurate global development data available, and includes national, regional and global estimates.
         
-        Topics: Agriculture and Food Security, Climate Change, Economic Growth, 
-        Education, Energy and Extractives, 
-        Environment and Natural Resources, Financial Sector Development, 
-        Gender, Health, Nutrition and Population, Macroeconomic Vulnerability and Debt, Poverty, 
-        Private Sector Development, Public Sector Management, 
-        Social Development, Social Protection and Labor, Trade, Urban Development
-        
         Type: Time Series
         
         Periodicity: Annual
@@ -192,14 +203,24 @@ if page=='About the Dataset':
         """
     )
 
-    country_list2 = st.multiselect(
-        "Choose Countries/Categories", data["Country Name"].unique().tolist()
-    )
+    country_list2 = st.multiselect("Choose Countries/Categories", data["Country Name"].unique().tolist())
+    
     if country_list2:
         st.dataframe(getCountryTable(country_list2))
         st.text("Tip: Click on the column names to sort values")
 
 
+if page=='Interesting Insights':
 
+    for i in range(len(insight_data.index)):
+        if insight_data.loc[i]["Approved"]=="Yes":
+            name = insight_data["Name"][i]
+            insight = insight_data["Insight"][i]
+
+            st.plotly_chart(getCountryComparisonPlot(insight_data["Plot"][i][0],insight_data["Plot"][i][1],False))
+            st.write(f"__Name__: {name}")
+            st.write(f"__Insight__: {insight}")
+
+            st.write("---")
 
 
