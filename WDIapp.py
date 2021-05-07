@@ -212,6 +212,8 @@ if page=='About the Dataset':
 
 if page=='Interesting Insights':
 
+    st.write(" # Interesting Insights")
+
     for i in range(len(insight_data.index)):
         if insight_data.loc[i]["Approved"]=="Yes":
             name = insight_data["Name"][i]
