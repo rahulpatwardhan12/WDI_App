@@ -65,7 +65,6 @@ local_css("style.css")
 firebase = firebase.FirebaseApplication('https://wdi-app-13c5c-default-rtdb.firebaseio.com/', None)
 
 data = pd.read_csv("WDIData.csv")
-insight_data = pd.read_pickle("insights.pkl")
 
 st.sidebar.title("Navigation")
 pages = ["About the Dataset","Interactive Plots","Interesting Insights"]
