@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import plotly.graph_objs as go
-from csv import writer
+from firebase import firebase
 
 def local_css(file_name):
     with open(file_name) as f:
@@ -62,6 +62,7 @@ def getCountryComparisonPlot(country_list,indicator_list,enableLegend):
         return fig2
 
 local_css("style.css")
+firebase = firebase.FirebaseApplication('https://wdi-app-13c5c-default-rtdb.firebaseio.com/', None)
 
 data = pd.read_csv("WDIData.csv")
 insight_data = pd.read_pickle("insights.pkl")
@@ -162,14 +163,15 @@ if page=='Interactive Plots':
                 ii_ct = country_list
                 ii_il = indicator_list
                 
-                # with open('insights.csv','a') as fd:
-                #     writer_obj = writer(fd)
-                #     writer_obj.writerow([name,ta,[ii_ct,ii_il],"No"])
-                #     fd.close()
+                rtdata = {
+                    'Name':name,
+                    'Insight':ta,
+                    'Plot':[ii_ct,ii_il],
+                    'Approved':'No'
+                }
 
-                #insight_data = pd.DataFrame(columns=["Name","Insight","Plot","Approved"])
-                insight_data.loc[len(insight_data)]=[name,ta,[ii_ct,ii_il],"No"]
-                insight_data.to_pickle("insights.pkl")
+                firebase.post('Insights/',rtdata)
+
                 st.success("Insight successfully submitted!")
             else:
                 st.error("Please fill all fields!")
@@ -215,14 +217,16 @@ if page=='Interesting Insights':
     st.write(" # Interesting Insights")
 
     for i in range(len(insight_data.index)):
-        if insight_data.loc[i]["Approved"]=="Yes":
-            name = insight_data["Name"][i]
-            insight = insight_data["Insight"][i]
+        idata = firebase.get('Insights/',None)
+        
+        for i in idata:
+            if(idata[i]["Approved"]=='Yes'):
+                name = idata[i]["Name"]
+                insight = idata[i]["Insight"]
 
-            st.plotly_chart(getCountryComparisonPlot(insight_data["Plot"][i][0],insight_data["Plot"][i][1],False))
-            st.write(f"__Name__: {name}")
-            st.write(f"__Insight__: {insight}")
-
-            st.write("---")
+                st.plotly_chart(getCountryComparisonPlot(idata[i]["Plot"][0],idata[i]["Plot"][1],False))
+                st.write(f"__Name__: {name}")
+                st.write(f"__Insight__: {insight}")
+                st.write("---")
 
 
