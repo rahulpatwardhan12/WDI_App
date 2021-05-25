@@ -214,17 +214,17 @@ if page=='About the Dataset':
 if page=='Interesting Insights':
 
     st.write(" # Interesting Insights")
-    for i in range(len(insight_data.index)):
-        idata = firebase.get('Insights/',None)
-        
-        for i in idata:
-            if(idata[i]["Approved"]=='Yes'):
-                name = idata[i]["Name"]
-                insight = idata[i]["Insight"]
 
-                st.plotly_chart(getCountryComparisonPlot(idata[i]["Plot"][0],idata[i]["Plot"][1],False))
-                st.write(f"__Name__: {name}")
-                st.write(f"__Insight__: {insight}")
-                st.write("---")
+    idata = firebase.get('Insights/',None)
+        
+    for i in idata:
+        if(idata[i]["Approved"]=='Yes'):
+            name = idata[i]["Name"]
+            insight = idata[i]["Insight"]
+
+            st.plotly_chart(getCountryComparisonPlot(idata[i]["Plot"][0],idata[i]["Plot"][1],False))
+            st.write(f"__Name__: {name}")
+            st.write(f"__Insight__: {insight}")
+            st.write("---")
 
 
